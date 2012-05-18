@@ -13,7 +13,7 @@ module Spree
           has_attached_file :data_file,
               :url => '/spree/cvs/:id/:basename.:extension',
               :storage => :s3,
-              :s3_credentials => 3_creds,
+              :s3_credentials => s3_creds,
               :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
 
 
