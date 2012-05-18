@@ -15,11 +15,12 @@ module Spree
 	  validates_attachment_presence :data_file
 
           if Spree::Config[:use_s3]
+              logger.info "Using S3 for CSV upload"
               s3_creds = { :access_key_id => Spree::Config[:s3_access_key], :secret_access_key => Spree::Config[:s3_secret], :bucket => Spree::Config[:s3_bucket] }
-              attachment_definitions[:data_file][:storage] = :s3
-              attachment_definitions[:data_file][:s3_credentials] = s3_creds
-              attachment_definitions[:data_file][:s3_headers] = ActiveSupport::JSON.decode(Spree::Config[:s3_headers])
-              attachment_definitions[:data_file][:bucket] = Spree::Config[:s3_bucket]
+              Spree::ProductImport.attachment_definitions[:data_file][:storage] = :s3
+              Spree::ProductImport.attachment_definitions[:data_file][:s3_credentials] = s3_creds
+              Spree::ProductImport.attachment_definitions[:data_file][:s3_headers] = ActiveSupport::JSON.decode(Spree::Config[:s3_headers])
+              Spree::ProductImport.attachment_definitions[:data_file][:bucket] = Spree::Config[:s3_bucket]
           end
 
 	  require 'csv'
