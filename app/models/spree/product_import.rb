@@ -10,7 +10,7 @@ module Spree
 
           has_attached_file :data_file,
               :storage => :s3,
-              bucket => Spree::Config[:s3_bucket] , 
+              :bucket => Spree::Config[:s3_bucket], 
               :s3_credentials => {
                   :access_key_id => Spree::Config[:s3_access_key],
                   :secret_access_key => Spree::Config[:s3_secret]
