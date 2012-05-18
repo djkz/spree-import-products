@@ -10,7 +10,8 @@ module Spree
 
           has_attached_file :data_file,
               :url => '/spree/cvs/:id/:basename.:extension',
-	      :path => ":rails_root/lib/etc/product_data/data-files/:basename.:extension"
+              :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
+
 	  validates_attachment_presence :data_file
 
           if Spree::Config[:use_s3]
