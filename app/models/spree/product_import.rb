@@ -8,16 +8,22 @@ module Spree
 	class ProductImport < ActiveRecord::Base
           attr_accessible :data_file
 
-          has_attached_file :data_file,
-              :storage => :s3,
-              :bucket => Spree::Config[:s3_bucket], 
-              :s3_credentials => {
-                  :access_key_id => Spree::Config[:s3_access_key],
-                  :secret_access_key => Spree::Config[:s3_secret]
-              },
-              :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
+          if Spree::Config[:use_s3]
+              has_attached_file :data_file,
+                  :storage => :s3,
+                  :bucket => Spree::Config[:s3_bucket], 
+                  :s3_credentials => {
+                    :access_key_id => Spree::Config[:s3_access_key],
+                    :secret_access_key => Spree::Config[:s3_secret]
+                  },
+                  :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
+          else
+              has_attached_file :data_file,
+                  :url => '/spree/cvs/:id/:basename.:extension',
+                  :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
+          end
 
-
+          validates_attachment_presence :data_file
 	  validates_attachment_presence :data_file
 
 	  require 'csv'
@@ -38,7 +44,11 @@ module Spree
 	      
 	      log("#{@names_of_products_before_import}")
 
-	      rows = CSV.read(self.data_file.path)
+              if Spree::Config[:use_s3]
+                  rows = CSV.parse(open(self.data_file.path))
+              else
+                  rows = CSV.read(self.data_file.path)
+              end
 
 	      if IMPORT_PRODUCT_SETTINGS[:first_row_is_headings]
 	        col = get_column_mappings(rows[0])
