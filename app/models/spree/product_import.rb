@@ -45,7 +45,7 @@ module Spree
 	      log("#{@names_of_products_before_import}")
 
               if Spree::Config[:use_s3]
-                  rows = CSV.parse(open(self.data_file.path))
+                  rows = CSV.parse(open(self.data_file.url))
               else
                   rows = CSV.read(self.data_file.path)
               end
