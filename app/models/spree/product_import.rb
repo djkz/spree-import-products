@@ -8,20 +8,16 @@ module Spree
 	class ProductImport < ActiveRecord::Base
           attr_accessible :data_file
 
+          s3_creds = { :access_key_id => Spree::Config[:s3_access_key], :secret_access_key => Spree::Config[:s3_secret], :bucket => Spree::Config[:s3_bucket] }
+
           has_attached_file :data_file,
               :url => '/spree/cvs/:id/:basename.:extension',
+              :storage => :s3,
+              :s3_credentials => 3_creds,
               :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
 
-	  validates_attachment_presence :data_file
 
-          if Spree::Config[:use_s3]
-              logger.info "Using S3 for CSV upload"
-              s3_creds = { :access_key_id => Spree::Config[:s3_access_key], :secret_access_key => Spree::Config[:s3_secret], :bucket => Spree::Config[:s3_bucket] }
-              Spree::ProductImport.attachment_definitions[:data_file][:storage] = :s3
-              Spree::ProductImport.attachment_definitions[:data_file][:s3_credentials] = s3_creds
-              Spree::ProductImport.attachment_definitions[:data_file][:s3_headers] = ActiveSupport::JSON.decode(Spree::Config[:s3_headers])
-              Spree::ProductImport.attachment_definitions[:data_file][:bucket] = Spree::Config[:s3_bucket]
-          end
+	  validates_attachment_presence :data_file
 
 	  require 'csv'
 	  require 'pp'
