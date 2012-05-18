@@ -9,6 +9,7 @@ module Spree
           attr_accessible :data_file
 
           if Spree::Config[:use_s3]
+              logger.info "Using S3 bucket"
               has_attached_file :data_file,
                   :storage => :s3,
                   :bucket => Spree::Config[:s3_bucket], 
@@ -18,12 +19,11 @@ module Spree
                   },
                   :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
           else
+              logger.info "Using local storage"
               has_attached_file :data_file,
-                  :url => '/spree/cvs/:id/:basename.:extension',
                   :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
           end
 
-          validates_attachment_presence :data_file
 	  validates_attachment_presence :data_file
 
 	  require 'csv'
