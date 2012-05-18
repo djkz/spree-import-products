@@ -8,12 +8,13 @@ module Spree
 	class ProductImport < ActiveRecord::Base
           attr_accessible :data_file
 
-          s3_creds = { :access_key_id => Spree::Config[:s3_access_key], :secret_access_key => Spree::Config[:s3_secret], :bucket => Spree::Config[:s3_bucket] }
-
           has_attached_file :data_file,
-              :url => '/spree/cvs/:id/:basename.:extension',
               :storage => :s3,
-              :s3_credentials => s3_creds,
+              bucket => Spree::Config[:s3_bucket] , 
+              :s3_credentials => {
+                  :access_key_id => Spree::Config[:s3_access_key],
+                  :secret_access_key => Spree::Config[:s3_secret]
+              },
               :path => ':rails_root/public/spree/csv/:id/:basename.:extension'
 
 
