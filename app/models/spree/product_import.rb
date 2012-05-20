@@ -119,7 +119,9 @@ module Spree
 	  # size/color options
 	  def create_variant_for(product, options = {:with => {}})
 	    return if options[:with].nil?
-	    variant = product.variants.new
+            sku = options[:with][:sku]
+	    variant = product.variants.find_or_initialize_by_sku(sku)
+            variant.option_values = []
 
 	    #Remap the options - oddly enough, Spree's product model has master_price and cost_price, while
 	    #variant has price and cost_price.
