@@ -29,7 +29,6 @@ module Spree
 	  require 'csv'
 	  require 'pp'
 	  require 'open-uri'
-          require 'iconv'
 
 	  ## Data Importing:
 	  # List Price maps to Master Price, Current MAP to Cost Price, Net 30 Cost unused
@@ -78,7 +77,7 @@ module Spree
 	        row.each do |r|
 	          next unless r.is_a?(String)
 	          r.gsub!(/\A\s*/, '').chomp!
-                  r = to_utf_8(r)
+                  r.encode!("UTF-8","Windows-1252", invalid: :replace, under: :replace)
 	        end
 
 	        if IMPORT_PRODUCT_SETTINGS[:create_variants]
@@ -112,11 +111,6 @@ module Spree
 
 
 	  private
-
-          def to_utf_8(value)
-              Iconv.iconv('UTF-8','ISO-8859-1', value).join
-          end
-
 
 	  # create_variant_for
 	  # This method assumes that some form of checking has already been done to
