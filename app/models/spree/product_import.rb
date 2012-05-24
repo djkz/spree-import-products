@@ -29,6 +29,7 @@ module Spree
 	  require 'csv'
 	  require 'pp'
 	  require 'open-uri'
+          require 'iconv'
 
 	  ## Data Importing:
 	  # List Price maps to Master Price, Current MAP to Cost Price, Net 30 Cost unused
@@ -73,10 +74,11 @@ module Spree
 	        product_information[:available_on] = DateTime.now - 1.day if product_information[:available_on].nil?
 
 
-	        #Trim whitespace off the beginning and end of row fields
+	        #Trim whitespace off the beginning and end of row fields and reencode into utf8
 	        row.each do |r|
 	          next unless r.is_a?(String)
 	          r.gsub!(/\A\s*/, '').chomp!
+                  r = to_utf_8(r)
 	        end
 
 	        if IMPORT_PRODUCT_SETTINGS[:create_variants]
@@ -110,6 +112,10 @@ module Spree
 
 
 	  private
+
+          def to_utf_8(value)
+              Iconv.iconv('UTF-8','ISO-8859-1', value).join
+          end
 
 
 	  # create_variant_for
