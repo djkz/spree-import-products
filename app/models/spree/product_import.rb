@@ -45,9 +45,9 @@ module Spree
 	      log("#{@names_of_products_before_import}")
 
               if Spree::Config[:use_s3]
-                  rows = CSV.parse(open(self.data_file.url))
+                  rows = CSV.parse(open(self.data_file.url),encoding:"UTF-32BE:UTF-8")
               else
-                  rows = CSV.read(self.data_file.path)
+                  rows = CSV.read(self.data_file.path,encoding:"UTF-32BE:UTF-8")
               end
 
 	      if IMPORT_PRODUCT_SETTINGS[:first_row_is_headings]
@@ -77,7 +77,6 @@ module Spree
 	        row.each do |r|
 	          next unless r.is_a?(String)
 	          r.gsub!(/\A\s*/, '').chomp!
-                  r.encode!("UTF-8","Windows-1252", invalid: :replace, under: :replace)
 	        end
 
 	        if IMPORT_PRODUCT_SETTINGS[:create_variants]
