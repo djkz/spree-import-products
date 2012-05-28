@@ -207,9 +207,9 @@ module Spree
 	        associate_product_with_taxon(product, field.to_s, params_hash[field.to_sym])
 	      end
 
-	      #Finally, attach any images that have been specified
+	      #Finally, attach any images that have been specified to the master variant
 	      IMPORT_PRODUCT_SETTINGS[:image_fields].each do |field|
-	        find_and_attach_image_to(product, params_hash[field.to_sym])
+	        find_and_attach_image_to(product.master, params_hash[field.to_sym])
 	      end
 
 	      if IMPORT_PRODUCT_SETTINGS[:multi_domain_importing] && product.respond_to?(:stores)
