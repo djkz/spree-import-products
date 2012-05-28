@@ -245,6 +245,7 @@ module Spree
 	  def get_column_mappings(row)
 	    mappings = {}
 	    row.each_with_index do |heading, index|
+              next if heading.blank?
 	      mappings[heading.downcase.gsub(/\A\s*/, '').chomp.gsub(/\s/, '_').to_sym] = index
 	    end
 	    mappings
