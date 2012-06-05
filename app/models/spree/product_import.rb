@@ -122,6 +122,7 @@ module Spree
             sku = options[:with][:sku]
 	    variant = product.variants.find_or_initialize_by_sku(sku)
             variant.option_values = []
+            variant.images.destroy_all
 
 	    #Remap the options - oddly enough, Spree's product model has master_price and cost_price, while
 	    #variant has price and cost_price.
